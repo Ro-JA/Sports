@@ -48,10 +48,13 @@ class SportsListFragment : Fragment() {
         val binding = FragmentSportsListBinding.bind(view)
 
         val slidingPaneLayout = binding.slidingPaneLayout
+        slidingPaneLayout.lockMode = SlidingPaneLayout.LOCK_MODE_LOCKED
+
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             SportsListOnBackPressedCallback(slidingPaneLayout)
         )
+
 
         // Initialize the adapter and set it to the RecyclerView.
         val adapter = SportsAdapter {
@@ -59,7 +62,7 @@ class SportsListFragment : Fragment() {
             // This will automatically update the dual pane content
             sportsViewModel.updateCurrentSport(it)
             // Navigate to the details screen
-           binding.slidingPaneLayout.openPane()
+            binding.slidingPaneLayout.openPane()
         }
         binding.recyclerView.adapter = adapter
         adapter.submitList(sportsViewModel.sportsData)
@@ -67,12 +70,13 @@ class SportsListFragment : Fragment() {
 
     class SportsListOnBackPressedCallback(
         private val slidingPaneLayout: SlidingPaneLayout
-    ) :  OnBackPressedCallback(slidingPaneLayout.isSlideable && slidingPaneLayout.isOpen),
-    SlidingPaneLayout.PanelSlideListener{
+    ) : OnBackPressedCallback(slidingPaneLayout.isSlideable && slidingPaneLayout.isOpen),
+        SlidingPaneLayout.PanelSlideListener {
 
         init {
             slidingPaneLayout.addPanelSlideListener(this)
         }
+
         override fun handleOnBackPressed() {
             slidingPaneLayout.closePane()
         }
